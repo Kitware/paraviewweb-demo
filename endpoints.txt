@@ -1,0 +1,7 @@
+glance /opt/paraview/share/paraview-5.7/web/glance/www
+lite /opt/paraview/share/paraview-5.7/web/lite/www
+divvy /opt/paraview/share/paraview-5.7/web/divvy/www
+visualizer /opt/paraview/share/paraview-5.7/web/visualizer/www
+flow /opt/paraview/share/paraview-5.7/web/flow/www
+DOCUMENT-ROOT-DIRECTORY /pvw/website/
+
