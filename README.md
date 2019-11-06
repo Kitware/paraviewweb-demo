@@ -35,9 +35,9 @@ unzip master.zip
 curl -OL https://www.paraview.org/files/v4.1/ParaViewData-v4.1.0.zip
 unzip ParaViewData-v4.1.0.zip
 
-docker run --rm \
+docker run \
   --gpus all \
-  -v /path/to/demo/paraviewweb-demo-master:/pvw \
+  -v /path/to/demo/paraviewweb-demo-master/pvw:/pvw \
   -v /path/to/demo/ParaViewData-v4.1/Data:/data \
   -p 0.0.0.0:9000:80 \
   -e SERVER_NAME="${DEMO_HOST}:${DEMO_PORT}" \
@@ -46,6 +46,28 @@ docker run --rm \
 ```
 
 Then point your browser at `www.example.com:9000`.
+
+### Running as a service
+
+You can run the command line above as a service if you want it to be restarted automatically after reboot.  Simply include the `--restart unless-stopped` command-line argument:
+
+```
+docker run \
+  --gpus all \
+  -v /path/to/demo/paraviewweb-demo-master/pvw:/pvw \
+  -v /path/to/demo/ParaViewData-v4.1/Data:/data \
+  -p 0.0.0.0:9000:80 \
+  -e SERVER_NAME="${DEMO_HOST}:${DEMO_PORT}" \
+  -e PROTOCOL="ws" \
+  --restart unless-stopped
+  -ti ${IMAGE_TO_RUN}
+```
+
+If you want to stop the service, first look for the container ID using the `docker ps` command line.  Then you can stop it as follows:
+
+```
+docker stop ${CONTAINER_ID}
+```
 
 ## More Information
 
