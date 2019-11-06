@@ -8,9 +8,9 @@ Here is a screenshot of the website, where each screenshot is actually a link to
 
 ## Instructions for use
 
-The basic idea is to download a [zip](https://github.com/Kitware/paraviewweb-demo/archive/master.zip) of this repository and unpack into some location on the machine where you want to launch the demo.  Then simply execute a `docker run ...` command line giving the appropriate command-line options, and that's it.
+The basic idea is to download a [zip](https://github.com/Kitware/paraviewweb-demo/archive/master.zip) of this repository and unpack it into some location on the machine where you want to launch the demo.  Then simply execute a `docker run ...` command line giving the appropriate command-line options, and that's it.
 
-In order for the demo to have any chance of showing something interesting, some data needs to be made available.  In fact, for some of the links from the website to work, there are some requirement about what files are available within the mounted data directory.  At a miminum the data root directory needs to contain the `disk_out_ref.ex2` file available with the ParaView data.
+In order for the demo to show something interesting, some data needs to be made available.  In fact, for some of the links from the website to work, there are some requirement about what files are available within the mounted data directory.  At a miminum the data root directory needs to contain the `disk_out_ref.ex2` file available with the ParaView data.
 
 ### Detailed Steps
 
@@ -31,13 +31,13 @@ Then download the demo website and some sample data, and start the demo server. 
 mkdir -p /path/to/demo
 cd /path/to/demo
 curl -OL https://github.com/Kitware/paraviewweb-demo/archive/master.zip
-
+unzip master.zip
 curl -OL https://www.paraview.org/files/v4.1/ParaViewData-v4.1.0.zip
 unzip ParaViewData-v4.1.0.zip
 
 docker run --rm \
   --gpus all \
-  -v /path/to/demo/paraviewweb-demo:/pvw \
+  -v /path/to/demo/paraviewweb-demo-master:/pvw \
   -v /path/to/demo/ParaViewData-v4.1/Data:/data \
   -p 0.0.0.0:9000:80 \
   -e SERVER_NAME="${DEMO_HOST}:${DEMO_PORT}" \
