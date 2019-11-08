@@ -4,7 +4,7 @@
     "updir": "/Home"
   },
   "configuration": {
-    "log_dir": "/opt/launcher/log",
+    "log_dir": "/pvw/launcher/log",
     "host": "localhost",
     "endpoint": "paraview",
     "sessionURL": "SESSION_URL_ROOT/proxy?sessionId=${id}&path=ws",
