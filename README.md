@@ -1,6 +1,6 @@
 # Introduction
 
-This repository is home to the website and launcher configuration for ParaViewWeb container demos that can be run with the Docker images available on the ParaView DockerHub [repository](https://hub.docker.com/repository/docker/kitware/paraview).
+This repository is home to the website and launcher configuration for ParaViewWeb container demos that can be run with the Docker images available on the ParaView DockerHub [repository](https://hub.docker.com/r/kitware/paraview).
 
 Here is a screenshot of the website, where each screenshot is actually a link to launch an interactive web application within the container.
 
@@ -16,20 +16,21 @@ In order for the demo to show something interesting, some data needs to be made 
 
 First set some environment variables defining the ParaViewWeb docker image you want to run, and the host/port you want to use:
 
-```
-# export IMAGE_TO_RUN="pvw-v5.7.1-osmesa-py2"
-# export IMAGE_TO_RUN="pvw-v5.7.1-osmesa-py3"
-# export IMAGE_TO_RUN="pvw-v5.7.1-egl-py2"
-export IMAGE_TO_RUN="pvw-v5.7.1-egl-py3"
+```sh
+# export IMAGE_TO_RUN=kitware/paraview:pvw-v5.7.1-osmesa-py2
+# export IMAGE_TO_RUN=kitware/paraview:pvw-v5.7.1-osmesa-py3
+# export IMAGE_TO_RUN=kitware/paraview:pvw-v5.7.1-egl-py2
+export IMAGE_TO_RUN=kitware/paraview:pvw-v5.7.1-egl-py3
 export DEMO_HOST=www.example.com
 export DEMO_PORT=9000
 ```
 
 Then download the demo website and some sample data, and start the demo server.  If you pick an `egl` image to run, you need to invoke `docker` with the `--gpus all` flag.  If you instead choose an `osmesa` image (maybe your machine doesn't have recent enough NVidia graphics card + drivers), you should skip that flag.
 
-```
-mkdir -p /path/to/demo
-cd /path/to/demo
+```sh
+umask 022
+mkdir -p paraviewweb-data
+cd paraviewweb-data
 curl -OL https://github.com/Kitware/paraviewweb-demo/archive/master.zip
 unzip master.zip
 curl -OL https://www.paraview.org/files/v4.1/ParaViewData-v4.1.0.zip
@@ -37,12 +38,12 @@ unzip ParaViewData-v4.1.0.zip
 
 docker run \
   --gpus all \
-  -v /path/to/demo/paraviewweb-demo-master/pvw:/pvw \
-  -v /path/to/demo/ParaViewData-v4.1/Data:/data \
-  -p 0.0.0.0:9000:80 \
-  -e SERVER_NAME="${DEMO_HOST}:${DEMO_PORT}" \
-  -e PROTOCOL="ws" \
-  -ti ${IMAGE_TO_RUN}
+  -v "$PWD"/paraviewweb-demo-master/pvw:/pvw \
+  -v "$PWD"/ParaViewData-v4.1/Data:/data \
+  -p 0.0.0.0:$DEMO_PORT:80 \
+  -e SERVER_NAME="$DEMO_HOST:$DEMO_PORT" \
+  -e PROTOCOL=ws \
+  -ti $IMAGE_TO_RUN
 ```
 
 Then point your browser at `www.example.com:9000`.
@@ -51,22 +52,22 @@ Then point your browser at `www.example.com:9000`.
 
 You can run the command line above as a service if you want it to be restarted automatically after reboot.  Simply include the `--restart unless-stopped` command-line argument:
 
-```
+```sh
 docker run \
   --gpus all \
-  -v /path/to/demo/paraviewweb-demo-master/pvw:/pvw \
-  -v /path/to/demo/ParaViewData-v4.1/Data:/data \
-  -p 0.0.0.0:9000:80 \
-  -e SERVER_NAME="${DEMO_HOST}:${DEMO_PORT}" \
-  -e PROTOCOL="ws" \
+  -v "$PWD"/paraviewweb-demo-master/pvw:/pvw \
+  -v "$PWD"/ParaViewData-v4.1/Data:/data \
+  -p 0.0.0.0:$DEMO_PORT:80 \
+  -e SERVER_NAME=$DEMO_HOST:$DEMO_PORT \
+  -e PROTOCOL=ws \
   --restart unless-stopped
-  -ti ${IMAGE_TO_RUN}
+  -ti $IMAGE_TO_RUN
 ```
 
 If you want to stop the service, first look for the container ID using the `docker ps` command line.  Then you can stop it as follows:
 
-```
-docker stop ${CONTAINER_ID}
+```sh
+docker stop <CONTAINER-ID>
 ```
 
 ## More Information
